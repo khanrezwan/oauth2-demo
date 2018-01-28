@@ -1,15 +1,18 @@
 package com.rezwanislam.oauth2demo.model;
 
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.Email;
+
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Document
 public class User implements UserDetails{
@@ -33,10 +36,20 @@ public class User implements UserDetails{
     @NotNull
     private String password;
 
+    public User(String username, String email, Boolean accountNonExpired, Boolean enabled, String password) {
+        this.username = username;
+        this.email = email;
+        this.accountNonExpired = accountNonExpired;
+        this.enabled = enabled;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+        return authorities;
     }
 
 
@@ -57,7 +70,7 @@ public class User implements UserDetails{
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
@@ -93,7 +106,7 @@ public class User implements UserDetails{
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 }
