@@ -13,7 +13,7 @@
 [Tut2]: <https://jugbd.org/2017/09/19/implementing-oauth2-spring-boot-spring-security/>
 [Documentation1]: <http://projects.spring.io/spring-security-oauth/docs/oauth2.html>
 [Documentation2]:<https://github.com/jeebb/oauth-demo/tree/master/sec-api/src/main/java/com/jeenguyen/demo/oauth/api/entities>
-[Library1]: <https://github.com/altfatterz/spring-security-mongodb>
+[Library1]: <https://github.com/caelwinner/spring-security-mongo>
 ## curl commands
 ```sh
 $ curl -X POST --user 'cli1:secret' -d 'grant_type=password&username=rik&password=password' http://localhost:8080/oauth/token

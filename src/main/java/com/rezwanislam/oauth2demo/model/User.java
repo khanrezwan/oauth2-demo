@@ -3,110 +3,124 @@ package com.rezwanislam.oauth2demo.model;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Document
-public class User implements UserDetails{
+public class User implements UserDetails, CredentialsContainer {
+
     @Id
-    private ObjectId id;
-
-    @NotNull
     private String username;
-
-    @NotNull
-    @Email
-    @Indexed(unique = true)
-    private String email;
-
-    @NotNull
-    private Boolean accountNonExpired;
-
-    @NotNull
-    private Boolean enabled;
-
-    @NotNull
     private String password;
+    private UUID userUUID;
+    private Set<GrantedAuthority> authorities;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
 
-    public User(String username, String email, Boolean accountNonExpired, Boolean enabled, String password) {
-        this.username = username;
-        this.email = email;
-        this.accountNonExpired = accountNonExpired;
-        this.enabled = enabled;
+    public User() {
+    }
+
+    @PersistenceConstructor
+    public User(final String password,
+                final String username,
+                final UUID userUUID,
+                final Set<GrantedAuthority> authorities,
+                final boolean accountNonExpired,
+                final boolean accountNonLocked,
+                final boolean credentialsNonExpired,
+                final boolean enabled) {
         this.password = password;
+        this.username = username;
+        this.userUUID = userUUID;
+        this.authorities = authorities;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
         return authorities;
     }
 
-
     @Override
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.accountNonExpired;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
-    }
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        return enabled;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public void eraseCredentials() {
+        password = null;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public UUID getUserUUID() {
+        return userUUID;
     }
 
-    public Boolean getAccountNonExpired() {
-        return accountNonExpired;
+    @Override
+    public int hashCode() {
+        return Objects.hash(password, username, userUUID, authorities, accountNonExpired, accountNonLocked, credentialsNonExpired, enabled);
     }
 
-    public void setAccountNonExpired(Boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        return Objects.equals(this.password, other.password) && Objects.equals(this.username, other.username) && Objects.equals(this.userUUID, other.userUUID) && Objects.equals(this.authorities, other.authorities) && Objects.equals(this.accountNonExpired, other.accountNonExpired) && Objects.equals(this.accountNonLocked, other.accountNonLocked) && Objects.equals(this.credentialsNonExpired, other.credentialsNonExpired) && Objects.equals(this.enabled, other.enabled);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", userUUID=" + userUUID +
+                ", authorities=" + authorities +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", enabled=" + enabled +
+                '}';
     }
-
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
 }

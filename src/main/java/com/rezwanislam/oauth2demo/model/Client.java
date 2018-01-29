@@ -1,112 +1,172 @@
 package com.rezwanislam.oauth2demo.model;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Document
 public class Client implements ClientDetails {
 
     @Id
-    private ObjectId id;
-
-    @NotNull
-    @Indexed(unique = true)
     private String clientId;
-    @NotNull
     private String clientSecret;
+    private Set<String> scope = Collections.emptySet();
+    private Set<String> resourceIds = Collections.emptySet();
+    private Set<String> authorizedGrantTypes = Collections.emptySet();
+    private Set<String> registeredRedirectUris;
+    private List<GrantedAuthority> authorities = Collections.emptyList();
+    private Integer accessTokenValiditySeconds;
+    private Integer refreshTokenValiditySeconds;
+    private Map<String, Object> additionalInformation = new LinkedHashMap<String, Object>();
+    private Set<String> autoApproveScopes;
 
-    private Set<String> scope;
+    public Client() {
+    }
 
-    @NotNull
-    private Set<String> authorizedGrantTypes;
-
-    public Client(String clientId, String clientSecret, Set<String> scope) {
-        this.clientSecret = clientSecret;
+    @PersistenceConstructor
+    public Client(final String clientId,
+                              final String clientSecret,
+                              final Set<String> scope,
+                              final Set<String> resourceIds,
+                              final Set<String> authorizedGrantTypes,
+                              final Set<String> registeredRedirectUris,
+                              final List<GrantedAuthority> authorities,
+                              final Integer accessTokenValiditySeconds,
+                              final Integer refreshTokenValiditySeconds,
+                              final Map<String, Object> additionalInformation,
+                              final Set<String> autoApproveScopes) {
         this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.scope = scope;
-        this.authorizedGrantTypes = new HashSet<>();
-        authorizedGrantTypes.add("password");
-        authorizedGrantTypes.add("authorization_code");
-        authorizedGrantTypes.add("refresh_token");
-
-        //this.authorizedGrantTypes = new AuthorizedGrantTypes();
+        this.resourceIds = resourceIds;
+        this.authorizedGrantTypes = authorizedGrantTypes;
+        this.registeredRedirectUris = registeredRedirectUris;
+        this.authorities = authorities;
+        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+        this.additionalInformation = additionalInformation;
+        this.autoApproveScopes = autoApproveScopes;
     }
 
-    @Override
     public String getClientId() {
-        return this.clientId;
+        return clientId;
     }
 
-    @Override
-    public Set<String> getResourceIds() {
-        return null;
-    }
-
-    @Override
-    public boolean isSecretRequired() {
-        return true;
-    }
-
-    @Override
     public String getClientSecret() {
-        return this.clientSecret;
+        return clientSecret;
+    }
+
+    public Set<String> getScope() {
+        return scope;
+    }
+
+    public Set<String> getResourceIds() {
+        return resourceIds;
+    }
+
+    public Set<String> getAuthorizedGrantTypes() {
+        return authorizedGrantTypes;
+    }
+
+    public List<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public Integer getAccessTokenValiditySeconds() {
+        return accessTokenValiditySeconds;
+    }
+
+    public Integer getRefreshTokenValiditySeconds() {
+        return refreshTokenValiditySeconds;
+    }
+
+    public Map<String, Object> getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAutoApproveScopes(final Set<String> autoApproveScopes) {
+        this.autoApproveScopes = autoApproveScopes;
+    }
+
+    public Set<String> getAutoApproveScopes() {
+        return autoApproveScopes;
     }
 
     @Override
     public boolean isScoped() {
-        return true;
+        return this.scope != null && !this.scope.isEmpty();
     }
 
     @Override
-    public Set<String> getScope() {
-        return this.scope;
-    }
-
-    @Override
-    public Set<String> getAuthorizedGrantTypes() {
-
-
-        return this.authorizedGrantTypes;
+    public boolean isSecretRequired() {
+        return this.clientSecret != null;
     }
 
     @Override
     public Set<String> getRegisteredRedirectUri() {
-        return null;
+        return registeredRedirectUris;
     }
 
     @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities= new ArrayList<>();
-        authorities.add(new MyGrantedAuthority("password"));
-        authorities.add(new MyGrantedAuthority("refresh_token"));
-        return  authorities;
+    public boolean isAutoApprove(final String scope) {
+        if (autoApproveScopes == null) {
+            return false;
+        }
+        for (String auto : autoApproveScopes) {
+            if (auto.equals("true") || scope.matches(auto)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientId, clientSecret, scope, resourceIds, authorizedGrantTypes, registeredRedirectUris, authorities, accessTokenValiditySeconds, refreshTokenValiditySeconds, additionalInformation, autoApproveScopes);
     }
 
     @Override
-    public Integer getAccessTokenValiditySeconds() {
-        return 120;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Client other = (Client) obj;
+        return Objects.equals(this.clientId, other.clientId)
+                && Objects.equals(this.clientSecret, other.clientSecret)
+                && Objects.equals(this.scope, other.scope)
+                && Objects.equals(this.resourceIds, other.resourceIds)
+                && Objects.equals(this.authorizedGrantTypes, other.authorizedGrantTypes)
+                && Objects.equals(this.registeredRedirectUris, other.registeredRedirectUris)
+                && Objects.equals(this.authorities, other.authorities)
+                && Objects.equals(this.accessTokenValiditySeconds, other.accessTokenValiditySeconds)
+                && Objects.equals(this.refreshTokenValiditySeconds, other.refreshTokenValiditySeconds)
+                && Objects.equals(this.additionalInformation, other.additionalInformation)
+                && Objects.equals(this.autoApproveScopes, other.autoApproveScopes);
     }
 
     @Override
-    public Integer getRefreshTokenValiditySeconds() {
-        return 120;
-    }
-
-    @Override
-    public boolean isAutoApprove(String s) {
-        return true;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalInformation() {
-        return null;
+    public String toString() {
+        return "Client{" +
+                "clientId='" + clientId + '\'' +
+                ", clientSecret='" + clientSecret + '\'' +
+                ", scope=" + scope +
+                ", resourceIds=" + resourceIds +
+                ", authorizedGrantTypes=" + authorizedGrantTypes +
+                ", registeredRedirectUris=" + registeredRedirectUris +
+                ", authorities=" + authorities +
+                ", accessTokenValiditySeconds=" + accessTokenValiditySeconds +
+                ", refreshTokenValiditySeconds=" + refreshTokenValiditySeconds +
+                ", additionalInformation=" + additionalInformation +
+                ", autoApproveScopes=" + autoApproveScopes +
+                '}';
     }
 }
