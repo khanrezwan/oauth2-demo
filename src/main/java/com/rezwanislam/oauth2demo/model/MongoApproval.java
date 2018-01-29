@@ -6,13 +6,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.Approval.ApprovalStatus;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
 @Document
-public class MongoApproval {
+public class MongoApproval extends Approval{
 
     @Id
     private String id;
@@ -21,9 +24,9 @@ public class MongoApproval {
     private String scope;
     private ApprovalStatus status;
     @CreatedDate
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
     @LastModifiedDate
-    private Date lastUpdatedAt;
+    private LocalDateTime lastUpdatedAt;
 
     public MongoApproval() {
     }
@@ -34,8 +37,8 @@ public class MongoApproval {
                          final String clientId,
                          final String scope,
                          final ApprovalStatus status,
-                         final Date expiresAt,
-                         final Date lastUpdatedAt) {
+                         final LocalDateTime expiresAt,
+                         final LocalDateTime lastUpdatedAt) {
         this.id = id;
         this.userId = userId;
         this.clientId = clientId;
@@ -66,11 +69,14 @@ public class MongoApproval {
     }
 
     public Date getExpiresAt() {
-        return expiresAt;
+        //from https://stackoverflow.com/questions/19431234/converting-between-java-time-localdatetime-and-java-util-date
+        return   Date.from(this.expiresAt.atZone(ZoneId.systemDefault()).toInstant());
+     //   return date;
     }
 
     public Date getLastUpdatedAt() {
-        return lastUpdatedAt;
+        return Date.from(this.lastUpdatedAt.atZone(ZoneId.systemDefault()).toInstant());
+
     }
 
     @Override
