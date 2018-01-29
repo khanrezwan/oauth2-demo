@@ -33,21 +33,21 @@ public class Oauth2DemoApplication implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 		//todo tut https://spring.io/guides/gs/accessing-data-mongodb/
-		clientRepository.deleteAll();
-		userRepository.deleteAll();
-		User user1, user2;
-
-		user1 = new User("rik", "rik@abc.com", true, true, "password");
-		user2 = new User("mahb", "mahb@abc.com", true, true, "password");
-		userRepository.save(user1);
-		userRepository.save(user2);
-
-		Client client1;
-		Set<String>scopes = new HashSet<>();
-		scopes.add("read");
-		scopes.add("write");
-		client1 = new Client("cli1","secret",scopes);
-		clientRepository.save(client1);
+//		clientRepository.deleteAll();
+//		userRepository.deleteAll();
+//		User user1, user2;
+//
+//		user1 = new User("rik", "rik@abc.com", true, true, "password");
+//		user2 = new User("mahb", "mahb@abc.com", true, true, "password");
+//		userRepository.save(user1);
+//		userRepository.save(user2);
+//
+//		Client client1;
+//		Set<String>scopes = new HashSet<>();
+//		scopes.add("read");
+//		scopes.add("write");
+//		client1 = new Client("cli1","secret",scopes);
+//		clientRepository.save(client1);
 
 
 	}
