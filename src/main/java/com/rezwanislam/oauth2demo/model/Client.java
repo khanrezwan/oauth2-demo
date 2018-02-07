@@ -29,16 +29,16 @@ public class Client implements ClientDetails {
 
     @PersistenceConstructor
     public Client(final String clientId,
-                              final String clientSecret,
-                              final Set<String> scope,
-                              final Set<String> resourceIds,
-                              final Set<String> authorizedGrantTypes,
-                              final Set<String> registeredRedirectUris,
-                              final List<GrantedAuthority> authorities,
-                              final Integer accessTokenValiditySeconds,
-                              final Integer refreshTokenValiditySeconds,
-                              final Map<String, Object> additionalInformation,
-                              final Set<String> autoApproveScopes) {
+                  final String clientSecret,
+                  final Set<String> scope,
+                  final Set<String> resourceIds,
+                  final Set<String> authorizedGrantTypes,
+                  final Set<String> registeredRedirectUris,
+                  final List<GrantedAuthority> authorities,
+                  final Integer accessTokenValiditySeconds,
+                  final Integer refreshTokenValiditySeconds,
+                  final Map<String, Object> additionalInformation,
+                  final Set<String> autoApproveScopes) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.scope = scope;
@@ -123,7 +123,6 @@ public class Client implements ClientDetails {
         }
         return false;
     }
-
 
 
     @Override
